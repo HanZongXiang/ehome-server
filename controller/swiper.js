@@ -33,6 +33,7 @@ router.post('/', auth, async (req,res,next) => {
 
 router.get('/',async (req,res,next) => {
   try {
+    let total = await swiperModel.count()
     let {page = 1,page_size = 10} = req.query;
     page = parseInt(page)
     page_size = parseInt(page_size)
@@ -48,7 +49,8 @@ router.get('/',async (req,res,next) => {
       res.json({
         code: 200,
         msg: '轮播图获取成功',
-        data
+        data,
+        total
       })
   } catch (error) {
     next(error)
@@ -96,6 +98,20 @@ router.patch('/:id', auth, async (req,res,next) => {
       code: 200,
       msg: '轮播图修改成功',
       data: updateData
+    })
+  } catch (error) {
+    next(error)
+  }
+})
+
+router.delete('/:_id',async (req,res,next) => {
+  try {
+    const {_id} = req.params
+    const data = await swiperModel.deleteOne({_id})
+    res.json({
+      code: 200,
+      msg: '轮播图删除成功',
+      data
     })
   } catch (error) {
     next(error)

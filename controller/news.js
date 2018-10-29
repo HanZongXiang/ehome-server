@@ -36,8 +36,39 @@ router.post('/', auth, async (req,res,next) => {
   }
 })
 
+router.patch('/:_id',async (req,res,next) => {
+  try {
+    const {_id} = req.params
+    let {
+      title,
+      content,
+      img,
+      author,
+      type
+    } = req.body;
+    const data = await newsModel.findById({_id})
+    const updateData = await data.updateOne({
+      $set: {
+        title,
+        content,
+        img,
+        author,
+        type,
+      }
+    })
+    res.json({
+      code: 200,
+      msg: '新闻信息修改成功',
+      data: updateData
+    })
+  } catch (error) {
+    next(error)
+  }
+})
+
 router.get('/',async (req,res,next) => {
   try {
+    let total = await newsModel.count()
     let {page = 1,page_size = 10} = req.query;
     page = parseInt(page)
     page_size = parseInt(page_size)
@@ -56,7 +87,8 @@ router.get('/',async (req,res,next) => {
       res.json({
         code: 200,
         msg: '获取新闻成功',
-        data: dataList
+        data: dataList,
+        total
       })
   } catch (error) {
     next(error)
@@ -80,6 +112,7 @@ router.get('/:id',async (req,res,next) => {
         msg: '获取单条新闻成功',
         data
       })
+      await data.updateOne({$inc: {look_nums: 1}})
   } catch (error) {
     next(error)
   }
@@ -91,7 +124,7 @@ router.delete('/:_id', auth,async (req,res,next) => {
     const data = await newsModel.deleteOne({_id})
     res.json({
       code: 200,
-      msg: '删除成功',
+      msg: '新闻删除成功',
       data
     })
   } catch (error) {

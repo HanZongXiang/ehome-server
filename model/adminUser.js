@@ -12,7 +12,7 @@ const adminUser = new mongoose.Schema({
     required: true
   },
   jobRank: Number,
-  phone: String,
+  phone: Number,
   sex: Number,
   desc: String,
   hometown: String,

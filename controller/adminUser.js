@@ -119,6 +119,7 @@ router.post('/login',async (req,res,next) => {
 
 router.get('/',async (req,res,next) => {
   try {
+    let count = await adminUserModel.count()
     let { page = 1, page_size = 10 } = req.query
     page = parseInt(page)
     page_size = parseInt(page_size)
@@ -130,6 +131,7 @@ router.get('/',async (req,res,next) => {
 
     res.json({
       code: 200,
+      total: count,
       data
     })
   } catch (error) {
